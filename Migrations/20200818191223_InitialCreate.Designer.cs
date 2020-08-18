@@ -10,7 +10,7 @@ using TestTaskBarsGroup;
 namespace TestTaskBarsGroup.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20200816163259_InitialCreate")]
+    [Migration("20200818191223_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,10 +37,10 @@ namespace TestTaskBarsGroup.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Officeid")
+                    b.Property<int?>("OfficeId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PaymentAmount")
+                    b.Property<decimal>("Payment")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PostName")
@@ -56,7 +56,7 @@ namespace TestTaskBarsGroup.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("Officeid");
+                    b.HasIndex("OfficeId");
 
                     b.ToTable("Employees");
                 });
@@ -106,11 +106,11 @@ namespace TestTaskBarsGroup.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Month")
-                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("SalaryForMonth")
                         .HasColumnType("decimal(18,2)");
@@ -124,7 +124,7 @@ namespace TestTaskBarsGroup.Migrations
 
             modelBuilder.Entity("TestTaskBarsGroup.Office", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -135,7 +135,7 @@ namespace TestTaskBarsGroup.Migrations
                     b.Property<string>("OfficeName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("id");
+                    b.HasKey("Id");
 
                     b.ToTable("Office");
                 });
@@ -148,7 +148,7 @@ namespace TestTaskBarsGroup.Migrations
 
                     b.HasOne("TestTaskBarsGroup.Office", "Office")
                         .WithMany()
-                        .HasForeignKey("Officeid");
+                        .HasForeignKey("OfficeId");
                 });
 
             modelBuilder.Entity("TestTaskBarsGroup.Models.HourPerMonth", b =>

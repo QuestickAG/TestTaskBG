@@ -61,6 +61,7 @@ namespace TestTaskBarsGroup.Services
                         DateTime = month,
                         SalaryForMonth = salaryEmployee
                     };
+
                     _dbContext.Add(salaryPerMonth);
                 }
             }

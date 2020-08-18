@@ -21,7 +21,6 @@ namespace TestTaskBarsGroup
 
         /*public ApplicationContext()
         {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }*/
 
@@ -29,7 +28,6 @@ namespace TestTaskBarsGroup
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=TestTaskBarsGroup;Trusted_Connection=True;");
         }
-
 
     }
 }

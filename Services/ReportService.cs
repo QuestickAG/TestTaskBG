@@ -102,7 +102,7 @@ namespace TestTaskBarsGroup
                 Console.WriteLine();
             }
         }
-        /*
+        
         public void ShowEmployeeCountByOfficeAndDepartment() // 5 report
         {
             var employeesByOffice = _dbContext.Employees
@@ -128,8 +128,7 @@ namespace TestTaskBarsGroup
                 Console.WriteLine();
             }
         }
-        */
-
+        
         public void ShowOfficeSalaryAverage() // 6 report
         {
             var OfficesSaalaryAverage = _dbContext.Salary
@@ -156,7 +155,7 @@ namespace TestTaskBarsGroup
             }
         } 
 
-        public void ShowEmployeeSalaryMoreN(decimal Number) // 7 report
+        public void ShowEmployeeSalaryMoreNumber(decimal Number) // 7 report
         {
             var employeesSalary = _dbContext.Salary
                 .Include(x =>x.Employee)

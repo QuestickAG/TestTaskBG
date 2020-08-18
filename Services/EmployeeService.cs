@@ -24,7 +24,8 @@ namespace TestTaskBarsGroup
                 PostName = employeeDto.PostName,
                 SalaryType = employeeDto.SalaryType,
                 Office = _dbContext.Office.Find(employeeDto.OfficeId),
-                Department = _dbContext.Departments.Find(employeeDto.DepartmentId)
+                Department = _dbContext.Departments.Find(employeeDto.DepartmentId),
+                Payment = employeeDto.Payment
             };
 
             _dbContext.Add(employee);
@@ -44,7 +45,7 @@ namespace TestTaskBarsGroup
             return false;
         }
 
-        public void ChangeSalaryType(int id, SalaryType type, decimal payment)
+        public void ChangeSalaryType(int id, decimal payment)
         {
             var employee = _dbContext.Employees.Find(id);
             if (employee.SalaryType == SalaryType.Fixed){

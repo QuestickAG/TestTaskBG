@@ -14,7 +14,6 @@ namespace TestTaskBarsGroup.Services
         private readonly ReportService _reportService;
         private readonly SalaryService _salaryService;
 
-
         public WorkService(DepartmentService departmentService,
             EmployeeService employeeService,
             ReportService reportService,
@@ -67,52 +66,129 @@ namespace TestTaskBarsGroup.Services
             var flag = true;
             while (flag)
             {
+                Console.Clear();
                 Console.WriteLine("Выбирите отчет: " +
-                        "1) Список филиалов в алфавитном порядке " +
-                        "2) Список подразделений в алфавитном порядке " +
-                        "3) Список филиалов в алфавитном порядке с указанием кол-ва работающих сотрудников в филиале " +
-                        "4) Список филиалов в алфавитном порядке с указанием кол-ва работающих сотрудников в филиале с группировкой по подразделениям " +
-                        "5) Назад");
+                        "\n1) Список филиалов в алфавитном порядке " +
+                        "\n2) Список подразделений в алфавитном порядке " +
+                        "\n3) Список филиалов в алфавитном порядке с указанием кол-ва работающих сотрудников в филиале " +
+                        "\n4) Расчетный лист за текущий месяц в виде для филиала и подразделения в виде списка сотрудников в алфавитном порядке с указанием суммы зарплаты" +
+                        "\n5) Список филиалов в алфавитном порядке с указанием кол-ва работающих сотрудников в филиале с группировкой по подразделениям" +
+                        "\n6) Список филиалов с указанием средней запрплаты в филиале" +
+                        "\n7) Список сотрудников, размер зарплаты в текущем месяце которых > X " +
+                        "\n8) Список сотрудников с фиксированной месячной оплатой, которые в текущем  месяце отработали все требуемые часы согласно трудовому календарю" +
+                        "\n9) Список N сотрудников с наибольшим размером зарплаты в текущем месяце" +
+                        "\n10) Назад");
                 string point = Console.ReadLine();
                 switch (point)
                 {
                     case "1":
                         Console.Clear();
                         _reportService.ShowByOffice();
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
                         break;
+
                     case "2":
                         Console.Clear();
                         _reportService.ShowByDepartment();
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
                         break;
+
                     case "3":
                         Console.Clear();
                         _reportService.ShowEmployeeCountByOffice();
                         Console.WriteLine("Нажмите Enter чтобы вернутся");
                         Console.ReadLine();
                         break;
+
                     case "4":
-
+                        var departmenstList = _departmentService.GetDepartments();
+                        _departmentService.ShowDepartments(departmenstList);
+                        Console.WriteLine("Введите id:");
+                        int departmentId;
+                        while (!int.TryParse(Console.ReadLine(), out departmentId) || !(departmenstList.Any(u => u.Id == departmentId)))
+                        {
+                            Console.WriteLine("введен не верный формат id");
+                        }
+                        
+                        var officeList = _officeService.GetOffices();
+                        _officeService.ShowOffices(officeList);
+                        Console.WriteLine("Введите id:");
+                        int officeId;
+                        while (!int.TryParse(Console.ReadLine(), out officeId) || !(officeList.Any(u => u.Id == officeId)))
+                        {
+                            Console.WriteLine("введен не верный формат id");
+                        }
+                        _reportService.ShowPaymentList(officeId, departmentId);
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
                         break;
-                    case "5":
 
+                    case "5":
+                        _reportService.ShowEmployeeCountByOfficeAndDepartment();
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
+                        break;
+
+                    case "6":
+                        _reportService.ShowOfficeSalaryAverage();
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
+                        break;
+
+                    case "7":
+                        Console.WriteLine("Введите суммы:");
+                        int number;
+                        while (!int.TryParse(Console.ReadLine(), out number) || !(number > 0))
+                        {
+                            Console.WriteLine("введен не верный формат суммы");
+                        }
+                        _reportService.ShowEmployeeSalaryMoreNumber(number);
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
+                        break;
+
+                    case "8":
+                        _reportService.ShowEmployeesWorkedAllHour();
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
+                        break;
+
+                    case "9":
+                        Console.WriteLine("Введите количество сотрудников:");
+                        int count;
+                        while (!int.TryParse(Console.ReadLine(), out count) || !(count > 0))
+                        {
+                            Console.WriteLine("введен не верный формат количества");
+                        }
+                        _reportService.ShowEmployeesMaxSalary(count);
+                        Console.WriteLine("Нажмите Enter чтобы вернутся");
+                        Console.ReadLine();
+                        break;
+
+                    case "10":
                         flag = false;
                         break;
+
                     default:
                         Console.WriteLine("Такого действия нет");
                         break;
                 }
             }
         }
+
         public void DepartmentServices()
         {
             var flag = true;
             while (flag ) 
             {
+                Console.Clear();
                 Console.WriteLine("Выбирите действие: " +
-                        "1) Добавить подразделение " +
-                        "2) Удалить подразделение " +
-                        "3) Показать подразделения" +
-                        "4) Назад");
+                        "\n1) Добавить подразделение " +
+                        "\n2) Удалить подразделение " +
+                        "\n3) Показать подразделения" +
+                        "\n4) Назад");
                 string point = Console.ReadLine();
                 var listDepartament = _departmentService.GetDepartments();
                 switch (point)
@@ -168,11 +244,12 @@ namespace TestTaskBarsGroup.Services
             var flag = true;
             while (flag)
             {
+                Console.Clear();
                 Console.WriteLine("Выбирите действие: " +
-                        "1) Добавить филиал " +
-                        "2) Удалить филиал " +
-                        "3) Показать филиалы " +
-                        "4) Назад");
+                        "\n1) Добавить филиал " +
+                        "\n2) Удалить филиал " +
+                        "\n3) Показать филиалы " +
+                        "\n4) Назад");
                 string point = Console.ReadLine();
                 var listOffices = _officeService.GetOffices();
                 switch (point)
@@ -340,7 +417,7 @@ namespace TestTaskBarsGroup.Services
                 Console.WriteLine("Введите оплату в час");
             }
             var paymentCount = PaymentCount();
-            _employeeService.ChangeSalaryType(id, type, paymentCount);
+            _employeeService.ChangeSalaryType(id, paymentCount);
             Console.WriteLine("Изменено успешно! Нажмите Enter!");
             Console.ReadLine();
             
@@ -375,6 +452,7 @@ namespace TestTaskBarsGroup.Services
             {
                 Console.WriteLine("Введите оплату в час");
             }
+            employee.SalaryType = type;
             employee.Payment = PaymentCount();
 
             _employeeService.AddEmployee(employee);

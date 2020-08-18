@@ -24,14 +24,14 @@ namespace TestTaskBarsGroup.Migrations
                 name: "Office",
                 columns: table => new
                 {
-                    id = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OfficeName = table.Column<string>(nullable: true),
                     OfficeCityName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Office", x => x.id);
+                    table.PrimaryKey("PK_Office", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -40,14 +40,14 @@ namespace TestTaskBarsGroup.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Officeid = table.Column<int>(nullable: true),
+                    OfficeId = table.Column<int>(nullable: true),
                     DepartmentId = table.Column<int>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     Surname = table.Column<string>(nullable: true),
                     MiddleName = table.Column<string>(nullable: true),
                     PostName = table.Column<string>(nullable: true),
                     SalaryType = table.Column<byte>(nullable: false),
-                    PaymentAmount = table.Column<decimal>(nullable: false)
+                    Payment = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -57,13 +57,13 @@ namespace TestTaskBarsGroup.Migrations
                         column: x => x.DepartmentId,
                         principalTable: "Departments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Employees_Office_Officeid",
-                        column: x => x.Officeid,
+                        name: "FK_Employees_Office_OfficeId",
+                        column: x => x.OfficeId,
                         principalTable: "Office",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -84,7 +84,7 @@ namespace TestTaskBarsGroup.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,7 +94,7 @@ namespace TestTaskBarsGroup.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmployeeId = table.Column<int>(nullable: true),
-                    Month = table.Column<DateTime>(nullable: false),
+                    DateTime = table.Column<DateTime>(nullable: false),
                     SalaryForMonth = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
@@ -105,7 +105,7 @@ namespace TestTaskBarsGroup.Migrations
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -114,9 +114,9 @@ namespace TestTaskBarsGroup.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_Officeid",
+                name: "IX_Employees_OfficeId",
                 table: "Employees",
-                column: "Officeid");
+                column: "OfficeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hours_EmployeeId",

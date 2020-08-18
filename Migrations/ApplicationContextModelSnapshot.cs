@@ -104,11 +104,11 @@ namespace TestTaskBarsGroup.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
                     b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("Month")
-                        .HasColumnType("datetime2");
 
                     b.Property<decimal>("SalaryForMonth")
                         .HasColumnType("decimal(18,2)");
