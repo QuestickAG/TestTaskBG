@@ -7,6 +7,7 @@ namespace TestTaskBarsGroup.Dto
     public class HourPerMonthDto
     {
         public int Id { get; set; }
+
         public int Employee { get; set; }
 
         public int Hour { get; set; }

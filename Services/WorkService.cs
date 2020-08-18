@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TestTaskBarsGroup.Dto;
 
 namespace TestTaskBarsGroup.Services
 {
@@ -11,17 +12,20 @@ namespace TestTaskBarsGroup.Services
         private readonly OfficeService _officeService;
         private readonly EmployeeService _employeeService;
         private readonly ReportService _reportService;
+        private readonly SalaryService _salaryService;
 
 
         public WorkService(DepartmentService departmentService,
             EmployeeService employeeService,
             ReportService reportService,
+            SalaryService salaryService,
             OfficeService officeService)
         {
             _departmentService = departmentService;
             _employeeService = employeeService;
             _officeService = officeService;
             _reportService = reportService;
+            _salaryService = salaryService;
         }
 
         public void Work()
@@ -32,10 +36,10 @@ namespace TestTaskBarsGroup.Services
             {
                 Console.Clear();
                 Console.WriteLine("Выбирите действие: " +
-                    " 1) Филиалы" +
-                    " 2) Подразделения" +
-                    " 3) Сотрудники" +
-                    " 4) Отчеты");
+                    " \n1) Филиалы" +
+                    " \n2) Подразделения" +
+                    " \n3) Сотрудники" +
+                    " \n4) Отчеты");
                 point = Console.ReadLine();
                 switch (point)
                 {
@@ -82,13 +86,15 @@ namespace TestTaskBarsGroup.Services
                         break;
                     case "3":
                         Console.Clear();
-                        //_reportService.ShowEmployeeCountByOffice();
+                        _reportService.ShowEmployeeCountByOffice();
                         Console.WriteLine("Нажмите Enter чтобы вернутся");
                         Console.ReadLine();
                         break;
                     case "4":
+
                         break;
                     case "5":
+
                         flag = false;
                         break;
                     default:
@@ -221,12 +227,15 @@ namespace TestTaskBarsGroup.Services
             var flag = true;
             while (flag)
             {
+                Console.Clear();
                 Console.WriteLine("Выбирите действие: " +
-                        "1) Добавить сотрудника " +
-                        "2) Удалить сотрудника " +
-                        "3) Показать все сотрудников " +
-                        "4) Сменить сотруднику тип и размер оплаты " +
-                        "5) Назад");
+                        "\n1) Добавить сотрудника " +
+                        "\n2) Удалить сотрудника " +
+                        "\n3) Показать все сотрудников " +
+                        "\n4) Сменить сотруднику тип и размер оплаты " +
+                        "\n5) Добавить отработанные часы за текущий месяц сотруднику" +
+                        "\n6) Расчитать зарплату всем работникам за текущий месяц" +
+                        "\n7) Назад");
                 string point = Console.ReadLine();
                 var listEmployee = _employeeService.GetEmployee();
                 switch (point)
@@ -243,13 +252,13 @@ namespace TestTaskBarsGroup.Services
                         break;
                     case "2":
                         _employeeService.ShowEmployees(listEmployee);
-                        int id;
-                        while (!int.TryParse(Console.ReadLine(), out id) || !(listEmployee.Any(u => u.Id == id)))
+                        int employeeId;
+                        while (!int.TryParse(Console.ReadLine(), out employeeId) || !(listEmployee.Any(u => u.Id == employeeId)))
                         {
                             Console.WriteLine("введен не верный формат id");
                         }
 
-                        if (_employeeService.RemoveEmployee(id))
+                        if (_employeeService.RemoveEmployee(employeeId))
                         {
                             Console.WriteLine("Удаление успешно! Нажмите Enter!");
                             Console.ReadLine();
@@ -267,29 +276,41 @@ namespace TestTaskBarsGroup.Services
                         Console.ReadLine();
                         break;
                     case "4":
-                        _employeeService.ShowEmployees(listEmployee);
-                        Console.WriteLine("Введите id сотрудника: ");
-                        while (!int.TryParse(Console.ReadLine(), out id) || !(listEmployee.Any(u => u.Id == id)))
-                        {
-                            Console.WriteLine("Введен не верный формат id");
-                        }
-                        
-                        var type = SalaryTypeSelected();
-                        if (type == SalaryType.Fixed)
-                        {
-                            Console.WriteLine("Введите оплату в месяц");
-                        }
-                        else if(type == SalaryType.Hourly)
-                        {
-                            Console.WriteLine("Введите оплату в час");
-                        }
-                        var paymentCount = PaymentCount();
-                        _employeeService.ChangeSalaryType(id, type, paymentCount);
-                        Console.WriteLine("Изменено успешно! Нажмите Enter!");
-                        Console.ReadLine();
+                        ChangeEmployeeSalaryType(listEmployee);
                         flag = false;
                         break;
                     case "5":
+                        _employeeService.ShowEmployees(listEmployee);
+                        Console.WriteLine("Введите id: ");
+                        while (!int.TryParse(Console.ReadLine(), out employeeId) || !(listEmployee.Any(u => u.Id == employeeId)))
+                        {
+                            Console.WriteLine("введен не верный формат id");
+                        }
+                        int hours;
+                        Console.WriteLine("Введите кол-во часов: ");
+                        while (!int.TryParse(Console.ReadLine(), out hours) || !(hours > 0 || hours < 150))
+                        {
+                            Console.WriteLine("Введен не верный формат часов");
+                        }
+
+                        var hourForEmployee = new HourPerMonthDto
+                        {
+                            Employee = employeeId,
+
+                            DateTime = DateTime.Now,
+
+                            Hour = hours
+                        };
+
+                        _salaryService.AddHours(hourForEmployee);
+
+                        flag = false;
+                        break;
+                    case "6":
+                        _salaryService.AddSalaryForMonth();
+                        flag = false;
+                        break;
+                    case "7":
                         flag = false;
                         break;
                     default:
@@ -297,6 +318,32 @@ namespace TestTaskBarsGroup.Services
                         break;
                 }
             }
+        }
+
+        private void ChangeEmployeeSalaryType(List<EmployeeDto> listEmployee)
+        {
+            int id;
+            _employeeService.ShowEmployees(listEmployee);
+            Console.WriteLine("Введите id сотрудника: ");
+            while (!int.TryParse(Console.ReadLine(), out id) || !(listEmployee.Any(u => u.Id == id)))
+            {
+                Console.WriteLine("Введен не верный формат id");
+            }
+
+            var type = SalaryTypeSelected();
+            if (type == SalaryType.Fixed)
+            {
+                Console.WriteLine("Введите оплату в месяц");
+            }
+            else if (type == SalaryType.Hourly)
+            {
+                Console.WriteLine("Введите оплату в час");
+            }
+            var paymentCount = PaymentCount();
+            _employeeService.ChangeSalaryType(id, type, paymentCount);
+            Console.WriteLine("Изменено успешно! Нажмите Enter!");
+            Console.ReadLine();
+            
         }
 
         private void AddEmployee()

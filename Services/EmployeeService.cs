@@ -55,6 +55,7 @@ namespace TestTaskBarsGroup
                 employee.SalaryType = SalaryType.Fixed;
                 employee.Payment = payment;
             }
+            _dbContext.Update(employee);
             _dbContext.SaveChanges();
         }
         public List<EmployeeDto> GetEmployee()
