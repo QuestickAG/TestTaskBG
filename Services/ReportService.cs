@@ -17,7 +17,7 @@ namespace TestTaskBarsGroup
             _dbContext = dbContext;
         }
 
-        public void ShowByOffice()
+        public void ShowByOffice() // 1 report
         {
             var offices = _dbContext.Office
                 .Select(offices => new OfficeDto
@@ -35,7 +35,7 @@ namespace TestTaskBarsGroup
             }
         }
 
-        public void ShowByDepartment()
+        public void ShowByDepartment() // 2 report 
         {
             var departments = _dbContext.Departments
                 .Select(departments => new DepartmentDto
@@ -52,7 +52,7 @@ namespace TestTaskBarsGroup
             }
         }
 
-        public void ShowEmployeeCountByOffice()
+        public void ShowEmployeeCountByOffice() // 3 report
         {
             var employeesByOffice = _dbContext.Employees
                 .Include(x => x.Office)
@@ -77,7 +77,7 @@ namespace TestTaskBarsGroup
             }
         }
 
-        public void ShowPaymentList(int officeId, int departmentId)
+        public void ShowPaymentList(int officeId, int departmentId) // 4 report
         {
 
             var employeesByOfficeAndByDepartment = _dbContext.Employees
@@ -103,7 +103,7 @@ namespace TestTaskBarsGroup
             }
         }
         /*
-        public void ShowEmployeeCountByOfficeAndDepartment()
+        public void ShowEmployeeCountByOfficeAndDepartment() // 5 report
         {
             var employeesByOffice = _dbContext.Employees
                 .Include(x => x.Office)
@@ -130,7 +130,7 @@ namespace TestTaskBarsGroup
         }
         */
 
-        public void ShowOfficeSalaryAverage()
+        public void ShowOfficeSalaryAverage() // 6 report
         {
             var OfficesSaalaryAverage = _dbContext.Salary
                 .Include(x => x.Employee)
@@ -154,11 +154,11 @@ namespace TestTaskBarsGroup
                 Console.WriteLine($"{OfficeSaalaryAverage.OfficeName} : {OfficeSaalaryAverage.SalaryAverage}");
                 Console.WriteLine();
             }
-        }
+        } 
 
-        public void ShowEmployeeSalaryMoreN(decimal Number)
+        public void ShowEmployeeSalaryMoreN(decimal Number) // 7 report
         {
-            var employeeSalary = _dbContext.Salary
+            var employeesSalary = _dbContext.Salary
                 .Include(x =>x.Employee)
                 .Where(x=>x.SalaryForMonth > Number)
                 .Select(x => new
@@ -168,9 +168,63 @@ namespace TestTaskBarsGroup
                     Month = x.DateTime.ToString("Y"),
                     Salary = x.SalaryForMonth
                 })
+                .AsEnumerable()
                 .ToList();
 
+            foreach (var employeeSalary in employeesSalary)
+            {
+                Console.WriteLine($"{employeeSalary.EmployeeSurname} {employeeSalary.EmployeeName}: " +
+                    $"месяц {employeeSalary.Month} - зарплата: {employeeSalary.Salary}");
+                Console.WriteLine();
+            }
         }
 
+        public void ShowEmployeesWorkedAllHour() // 8 report
+        {
+            var EmployeesFixedSalaryWorkedAllHour = _dbContext.Hours
+                .Include(x => x.Employee)
+                .Where(x => x.Employee.SalaryType == SalaryType.Fixed)
+                .Where(x => x.Hour == 150)
+                .Select(x => new
+                {
+                    EmployeeName = x.Employee.Name,
+                    EmployeeSurname = x.Employee.Surname,
+                    Month = x.DateTime.ToString("Y"),
+                    Hours = x.Hour
+                })
+                .AsEnumerable()
+                .ToList();
+
+            foreach (var EmployeeFixedSalaryWorkedAllHour in EmployeesFixedSalaryWorkedAllHour)
+            {
+                Console.WriteLine($"{EmployeeFixedSalaryWorkedAllHour.EmployeeSurname} {EmployeeFixedSalaryWorkedAllHour.EmployeeName}: " +
+                    $"месяц {EmployeeFixedSalaryWorkedAllHour.Month} - отработал часов: {EmployeeFixedSalaryWorkedAllHour.Hours}");
+                Console.WriteLine();
+            }
+        }
+
+        public void ShowEmployeesMaxSalary(int Count) // 9 report
+        {
+            var EmployeesMaxSalary = _dbContext.Salary
+                .Include(x => x.Employee)
+                .Where(x => x.DateTime.Month == DateTime.Now.Month)
+                .Select(x => new
+                {
+                    EmployeeName = x.Employee.Name,
+                    EmployeeSurname = x.Employee.Surname,
+                    Month = x.DateTime.ToString("Y"),
+                    Salary = x.SalaryForMonth
+                })
+                .OrderByDescending(x => x.Salary)
+                .Take(Count)
+                .ToList();
+
+            foreach (var EmployeeMaxSalary in EmployeesMaxSalary)
+            {
+                Console.WriteLine($"{EmployeeMaxSalary.EmployeeSurname} {EmployeeMaxSalary.EmployeeName}: " +
+                    $"месяц {EmployeeMaxSalary.Month} - зарплата: {EmployeeMaxSalary.Salary}");
+                Console.WriteLine();
+            }
+        }
     }
 }
